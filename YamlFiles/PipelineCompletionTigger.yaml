@@ -1,0 +1,53 @@
+# a pipeline resource trigger so that a pipeline named app-ci runs after any run of the security-lib-ci pipeline completes
+# security-lib-ci - This pipeline runs first
+
+# security-lib-ci YAML pipeline
+steps:
+- bash: echo "The security-lib-ci pipeline runs first"
+
+# app-ci - This pipeline has a pipeline resource trigger that configures the app-ci pipeline to run automatically every time a run of the security-lib-ci pipeline completes
+
+# app-ci YAML pipeline
+# We are setting up a pipeline resource that references the security-lib-ci
+# pipeline and setting up a pipeline completion trigger so that our app-ci
+# pipeline runs when a run of the security-lib-ci pipeline completes
+resources:
+  pipelines:
+  - pipeline: securitylib # Name of the pipeline resource.
+    source: security-lib-ci # The name of the pipeline referenced by this pipeline resource.
+    project: FabrikamProject # Required only if the source pipeline is in another project
+    trigger: true # Run app-ci pipeline when any run of security-lib-ci completes
+
+steps:
+- bash: echo "app-ci runs after security-lib-ci completes"
+----
+You can optionally specify the branches to include or exclude when configuring the trigger. If you specify branch filters, a new pipeline is triggered whenever a source pipeline run is successfully completed that matches the branch filters. In the following example, the app-ci pipeline runs if the security-lib-ci completes on any releases/* branch, except for releases/old*
+# app-ci YAML pipeline
+resources:
+  pipelines:
+  - pipeline: securitylib
+    source: security-lib-ci
+    trigger: 
+      branches:
+        include: 
+        - releases/*
+        exclude:
+        - releases/old*
+ ---
+ resources:
+  pipelines:
+  - pipeline: MyCIAlias
+    source: Farbrikam-CI
+    trigger:
+      tags:        # This filter is used for triggering the pipeline run
+      - Production # Tags are AND'ed
+      - Signed
+ ---
+ resources:
+  pipelines:
+  - pipeline: MyCIAlias  
+    source: Farbrikam-CI  
+    trigger:    
+      stages:         # This stage filter is used when evaluating conditions for 
+      - PreProduction # triggering your pipeline. On successful completion of all the stages
+      - Production    # provided, your pipeline will be triggered.
