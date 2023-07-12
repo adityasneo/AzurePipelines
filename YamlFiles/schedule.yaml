@@ -15,7 +15,6 @@ mm HH DD MM DW
     \  \________ Hours
      \__________ Minutes
 
-Now consider that a branch named release is created based off main, and then release is added to the branch filters in the YAML file in the main branch, but not in the newly created release branch     
 
 schedules:
 - cron: '0 0 * * *'
