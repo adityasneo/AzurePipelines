@@ -1,0 +1,23 @@
+# File: templates/include-npm-steps.yml
+
+steps:
+- script: npm install
+- script: yarn install
+- script: npm run compile
+---
+# File: azure-pipelines.yml
+
+jobs:
+- job: Linux
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - template: templates/include-npm-steps.yml  # Template reference
+- job: Windows
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - template: templates/include-npm-steps.yml  # Template reference
+
+  ---
+  
