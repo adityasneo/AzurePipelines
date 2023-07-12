@@ -31,3 +31,9 @@ schedules:
     include:
     - releases/*
   always: true     
+
+To force a pipeline to run even when there are no code changes, you can use the always keyword
+schedules:
+- cron: ...
+  ...
+  always: true
