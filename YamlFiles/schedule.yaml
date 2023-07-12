@@ -6,6 +6,8 @@ schedules:
     exclude: [ string ] # which branches to exclude from the schedule
   always: boolean # whether to always run the pipeline or only if there have been source code changes since the last successful scheduled run. The default is false.
 ---
+Cron Syntax
+
 mm HH DD MM DW
  \  \  \  \  \__ Days of week
   \  \  \  \____ Months
