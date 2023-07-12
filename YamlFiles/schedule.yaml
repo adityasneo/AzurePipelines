@@ -5,3 +5,26 @@ schedules:
     include: [ string ] # which branches the schedule applies to
     exclude: [ string ] # which branches to exclude from the schedule
   always: boolean # whether to always run the pipeline or only if there have been source code changes since the last successful scheduled run. The default is false.
+---
+mm HH DD MM DW
+ \  \  \  \  \__ Days of week
+  \  \  \  \____ Months
+   \  \  \______ Days
+    \  \________ Hours
+     \__________ Minutes
+
+schedules:
+- cron: '0 0 * * *'
+  displayName: Daily midnight build
+  branches:
+    include:
+    - main
+    - releases/*
+    exclude:
+    - releases/ancient/*
+- cron: '0 12 * * 0'
+  displayName: Weekly Sunday build
+  branches:
+    include:
+    - releases/*
+  always: true     
