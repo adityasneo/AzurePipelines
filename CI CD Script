@@ -1,0 +1,27 @@
+resources:
+  repositories:
+  - repository: templates
+    type: bitbucket
+    endpoint: aditya
+    name: aditya/integrity-devops
+
+variables: 
+- group: Vars.Global.Build
+- name: buildPlatform
+  value: Any CPU
+- name: solutionPath
+  value: 'integrity/AMSInternal.sln'
+
+trigger: 
+- Ci-pipeline-migration
+
+pr: 
+- Ci-pipeline-migration
+
+stages: 
+
+- stage: build
+  displayName: 'CI build'
+  dependsOn: ''
+  jobs:
+  - template: 'Templates/integrity.MDTA.CI.yml@templates'
