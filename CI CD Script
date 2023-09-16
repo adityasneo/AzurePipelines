@@ -10,7 +10,7 @@ variables:
 - name: buildPlatform
   value: Any CPU
 - name: solutionPath
-  value: 'integrity/AMSInternal.sln'
+  value: 'integrity/ASInternal.sln'
 
 trigger: 
 - Ci-pipeline-migration
@@ -25,3 +25,41 @@ stages:
   dependsOn: ''
   jobs:
   - template: 'Templates/integrity.MDTA.CI.yml@templates'
+
+pool: 
+      name: build-pool
+      
+    timeoutInMinutes: 120
+    steps: 
+    - checkout: self
+    - checkout: templates
+    - template: 'tasks/MTAIntegrity_taskgroup.yaml@templates'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    command: 'build'
+    projects: '**/*.sln'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: 'restore'
+    feedsToUse: config
+    nugetConfigPath: '${{ parameters.config }}'
+    projects: '**/*.sln'
+    includeNuGetOrg: true
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet publish'
+  inputs:
+    command: 'publish'
+    vstsFeed: ${{ parameters.feed }}
+    arguments: '-o $(Build.ArtifactStagingDirectory)/Output'
+    projects: '**/*.sln'
+    zipAfterPublish: true
+    modifyOutputPath: true
+    publishWebProjects: false
